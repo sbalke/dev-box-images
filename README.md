@@ -60,7 +60,7 @@ output:
 
 #### 4. [Install][az-bake-install] the `az bake` Azure CLI extension
 
-#### 5. Create a [sandbox][az-bake-sandbox], providing a [Azure Compute Gallery][az-gallery] and the Service Principal's ID (created above)
+#### 5. Create a [sandbox][az-bake-sandbox], providing an [Azure Compute Gallery][az-gallery] and the Service Principal's ID (created above)
 
 ```sh
 az bake sandbox create --name MySandbox --gallery MyGallery --principal 00000000-0000-0000-0000-000000000000
@@ -75,6 +75,12 @@ az bake repo setup --repo /path/to/repo --sandbox MySandbox --gallery MyGallery
 ```
 
 #### 7. Commit and push your changes
+
+This will kick off a GitHub Actions workflow to build your custom images.  Once the workflow is finished, you can continue to monitor the image builds:
+
+```sh
+az bake image logs --sandbox MySandbox --name VSCodeBox
+```
 
 # Contributing
 
