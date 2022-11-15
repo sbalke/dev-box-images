@@ -1,12 +1,8 @@
 # Dev Box Images
 
-This repo contains custom images to be used with [Microsoft Dev Box](https://techcommunity.microsoft.com/t5/azure-developer-community-blog/introducing-microsoft-dev-box/ba-p/3412063).  It demonstrates how to create custom images with pre-installed software using [Packer](https://www.packer.io/) and shared them via [Azure Compute Gallery](https://docs.microsoft.com/en-us/azure/virtual-machines/shared-image-galleries).
-
-See the [workflow file](.github/workflows/build_images.yml) to see how images are built and deployed.
+This repo contains custom images to be used with [Microsoft Dev Box](https://techcommunity.microsoft.com/t5/azure-developer-community-blog/introducing-microsoft-dev-box/ba-p/3412063).  It demonstrates how to create custom images with pre-installed software using [`az bake`][az-bake] (which uses [Packer](https://www.packer.io/) under the hood) and shared them via [Azure Compute Gallery][az-gallery].
 
 ## Images
-
-[![Build Images](/../../actions/workflows/build_images.yml/badge.svg)](/../../actions/workflows/build_images.yml)
 
 | Name      | OS                             | Additional Software                                          |
 | --------- | ------------------------------ | -------------------------------------------------------------|
@@ -25,7 +21,6 @@ The following software is installed on all images. Use [this form](/../../issues
 - [Firefox](https://www.mozilla.org/en-US/firefox/new/)
 - Git
 - [GitHub Desktop](https://desktop.github.com/)
-- [Postman](https://www.postman.com/)
 - [Chocolatey](https://chocolatey.org/)
 - [.Net](https://dotnet.microsoft.com/en-us/) (versions 3.1, 5.0, 6.0, 7.0)
 - [Python](https://www.python.org/) (version 3.10.5)
@@ -34,70 +29,52 @@ The following software is installed on all images. Use [this form](/../../issues
 
 ---
 
-# Usage
+## Usage
 
-To get started, [fork][fork] this repository.
+### To get started
 
-_NOTE: The workflow that builds and publishes the images [is only triggered](.github/workflows/build_images.yml#L8-L10) if files the `/images` or `/scripts` folders change.  After completing the steps below, modify any file within those two folders (like changing the `version` in the `image.yml` files) to initiate a build._
+#### 1. [Fork][fork] this repository
 
-## Azure Compute Gallery
-
-Open the [`gallery.yml`](gallery.yml) file in the root of the repository and update following properties to match your [Azure Compute Gallery][az-gallery]:
-
-- [`name`](gallery.yml#L1) - the name of your Azure Compute Gallery
-- [`resourceGroup`](gallery.yml#L2) - The resource group that contains your Azure Compute Gallery
-
-Example:
-
-```yaml
-name: MyGallery
-resourceGroup: MyGallery-RG
-```
-
-## Service Principal
-
-The solution requires a Service Principal to provision resources associated with create a new image (VMs, etc.).  See the [Azure Login action docs](create-sp) for instructions on how to create.
-
-**IMPORTANT: Once you create a new Service Principal you must [assign it the following roles in RBAC][assign-rbac]:**:
-
-- **Contributor** on the subscription used to provision resources, **OR**
-- **Owner** on a specific (existing) resource group (see [Resource Group Usage](#resource-group-usage) below) and **Contributor** on the [Azure Compute Gallery][az-gallery] (and its resource group)
-
-### `AZURE_CREDENTIALS`
-
-In your fork create a new [repository secret](repo-secret) named `AZURE_CREDENTIALS` with a value that contains credentials for the service principal created above. For details on how to create these credentials, see the [Azure Login action docs](create-sp).
-
-Example:
+#### 2. Create a Service Principal (or use an existing one)
 
 ```sh
-az ad sp create-for-rbac --sdk-auth --role contributor --scopes /subscriptions/<GUID> -n MyUniqueName
+az ad sp create-for-rbac -n MyUniqueName
 ```
 
 output:
 
 ```json
 {
-  "clientId": "<GUID>",
-  "clientSecret": "<STRING>",
-  "subscriptionId": "<GUID>",
-  "tenantId": "<GUID>"
-  (...)
+   "appId": "<GUID>",
+   "displayName": "MyUniqueName",
+   "password": "<STRING>",
+   "tenant": "<GUID>"
 }
 ```
 
-**IMPORTANT: when pasting in the value for `AZURE_CREDENTIALS`, remove all line breaks so that the JSON is on a single line. Otherwise GitHub will assume subscriptionId and tenantId are secrets and prevent them from being share across workflow jobs.**
+#### 3. Create three new [repository secrets][repo-secrets] with the values output above
 
-Example:
+- `AZURE_CLIENT_ID` _(appId)_
+- `AZURE_CLIENT_SECRET` _(password)_
+- `AZURE_TENANT_ID` _(tenant)_
 
-```json
-{ "clientId": "<GUID>", "clientSecret": "<GUID>", "subscriptionId": "<GUID>", "tenantId": "<GUID>", (...) }
+#### 4. [Install][az-bake-install] the `az bake` Azure CLI extension
+
+#### 5. Create a [sandbox][az-bake-sandbox], providing a [Azure Compute Gallery][az-gallery] and the Service Principal's ID (created above)
+
+```sh
+az bake sandbox create --name MySandbox --gallery MyGallery --principal 00000000-0000-0000-0000-000000000000
 ```
 
-## Resource Group Usage
+> _**Important:** The GUID passed in for the `--principal` argument is the principal's Id NOT its AppId from the output above. To get the principal's ID, run:_  `az ad sp show --id appId -o tsv --query id`
 
-This solution uses Packer's [Azure builder][az-builder] which can either provision resources into a new resource group that it controls (default) or an existing one. The advantage of using a packer defined resource group is that failed resource cleanup is easier because you can simply remove the entire resource group, however this means that the provided credentials must have permission to create and remove resource groups. By using an existing resource group you can scope the provided credentials to just this group, however failed builds are more likely to leave unused artifacts.
+#### 6. Setup the repo for use with `az bake`
 
-To use an existing resource group you **must** provide a value for `buildResourceGroup` in the images `image.yml` file.
+```sh
+az bake repo setup --repo /path/to/repo --sandbox MySandbox --gallery MyGallery
+```
+
+#### 7. Commit and push your changes
 
 # Contributing
 
@@ -114,10 +91,9 @@ For more information see the [Code of Conduct FAQ](https://opensource.microsoft.
 contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
 
 [win11]:https://www.microsoft.com/en-us/microsoft-365/windows/windows-11-enterprise
-[dtl]:https://www.packer.io/plugins/provisioners/azure
 [fork]:https://docs.github.com/en/get-started/quickstart/fork-a-repo
-[az-builder]:https://www.packer.io/plugins/builders/azure/arm
 [az-gallery]:https://docs.microsoft.com/en-us/azure/virtual-machines/shared-image-galleries?tabs=azure-cli
-[create-sp]:https://github.com/Azure/login#configure-deployment-credentials
-[repo-secret]:https://docs.github.com/en/actions/reference/encrypted-secrets#creating-encrypted-secrets-for-a-repository
-[assign-rbac]:https://docs.microsoft.com/en-us/azure/role-based-access-control/role-assignments-portal?tabs=current
+[az-bake]:https://github.com/colbylwilliams/az-bake
+[az-bake-install]:https://github.com/colbylwilliams/az-bake#install
+[az-bake-sandbox]:https://github.com/colbylwilliams/az-bake#sandbox
+[repo-secrets]:https://docs.github.com/en/actions/security-guides/encrypted-secrets#creating-encrypted-secrets-for-a-repository
