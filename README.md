@@ -15,17 +15,12 @@ Use [this form](/../../issues/new?assignees=colbylwilliams&labels=image&template
 
 The following software is installed on all images. Use [this form](/../../issues/new?assignees=colbylwilliams&labels=software&template=request_software.yml&title=%5BSoftware%5D%3A+) to request additional software.
 
-- [Microsoft 365 Apps](https://www.microsoft.com/en-us/microsoft-365/products-apps-services)
-- [Visual Studio Code](https://code.visualstudio.com/)
-- [Google Chrome](https://www.google.com/chrome/)
-- [Firefox](https://www.mozilla.org/en-US/firefox/new/)
-- Git
-- [GitHub Desktop](https://desktop.github.com/)
-- [Chocolatey](https://chocolatey.org/)
-- [.Net](https://dotnet.microsoft.com/en-us/) (versions 3.1, 5.0, 6.0, 7.0)
-- [Python](https://www.python.org/) (version 3.10.5)
-- [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/what-is-azure-cli) (2.37.0)
-- [Az PowerShell module](https://docs.microsoft.com/en-us/powershell/azure/what-is-azure-powershell)
+|     |     |     |
+| --- | --- | --- |
+| [Microsoft 365 Apps](https://www.microsoft.com/en-us/microsoft-365/products-apps-services) | [Visual Studio Code](https://code.visualstudio.com/) | [GitHub Desktop](https://desktop.github.com/) |
+| Git | [Firefox](https://www.mozilla.org/en-US/firefox/new/) | [Google Chrome](https://www.google.com/chrome/) |
+| [Chocolatey](https://chocolatey.org/) | [.Net](https://dotnet.microsoft.com/en-us/) (versions 3.1, 5.0, 6.0, 7.0) | [Python](https://www.python.org/) (version 3.10.5) |
+| [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/what-is-azure-cli) (2.37.0) | [Az PowerShell module](https://docs.microsoft.com/en-us/powershell/azure/what-is-azure-powershell) | |
 
 ---
 
