@@ -6,5 +6,14 @@
         "**/.git": true,
         "**/.DS_Store": true,
         "**/__pycache__": true
-    }
+    },
+    "python.formatting.autopep8Args": [
+        "--max-line-length=200"
+    ],
+    "isort.args": [
+        "-l",
+        "120",
+        "--lbt",
+        "1"
+    ]
 }
