@@ -19,5 +19,5 @@ install:
   choco:
     packages:
       - gh
-      - docker-desktop --version=4.22.1
+      - docker-desktop
       - sql-server-management-studio
