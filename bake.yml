@@ -1,17 +1,17 @@
 # yaml-language-server: $schema=https://github.com/colbylwilliams/az-bake/releases/latest/download/bake.schema.json
 version: 1.0
 sandbox:
-  resourceGroup: contoso-sandbox
-  subscription: e5f715ae-6c72-4a5c-87c8-495590c34828
+  resourceGroup: DevBoxSandbox
+  subscription: 82a72a85-dcea-4325-8e70-e2f8149fe677
   location: eastus
-  virtualNetwork: contoso-sandbox-vnet
-  virtualNetworkResourceGroup: contoso-sandbox
+  virtualNetwork: DevBoxSandbox-vnet
+  virtualNetworkResourceGroup: DevBoxSandbox
   defaultSubnet: default
   builderSubnet: builders
-  keyVault: contoso-sandbox-kv0
-  storageAccount: contososandboxstorage0
-  identityId: /subscriptions/e5f715ae-6c72-4a5c-87c8-495590c34828/resourceGroups/contoso-sandbox/providers/Microsoft.ManagedIdentity/userAssignedIdentities/contoso-sandbox-id
+  keyVault: DevBoxSandbox-kv
+  storageAccount: devboxsandboxstorage
+  identityId: /subscriptions/82a72a85-dcea-4325-8e70-e2f8149fe677/resourcegroups/DevBoxSandbox/providers/Microsoft.ManagedIdentity/userAssignedIdentities/DevBoxSandbox-id
 gallery:
-  name: contoso.gallery
-  resourceGroup: contoso-gallery
-  subscription: e5f715ae-6c72-4a5c-87c8-495590c34828
+  name: MyGallery
+  resourceGroup: TestRG
+  subscription: 82a72a85-dcea-4325-8e70-e2f8149fe677
