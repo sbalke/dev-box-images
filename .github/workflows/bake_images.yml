@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
 
     # uncomment to bake images only if '+bake' is in the commit message
-    # if: "contains(join(github.event.commits.*.message), '+bake')"
+    if: "contains(join(github.event.commits.*.message), '+bake')"
 
     steps:
       - uses: actions/checkout@v3
