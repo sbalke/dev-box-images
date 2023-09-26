@@ -21,7 +21,9 @@ install:
       - id: docker-desktop
         version: '4.22'
       - sql-server-management-studio
-      - notepadplusplus
+  winget:
+    packages:
+      - Notepad++.Notepad++
   scripts:
     powershell:
       - ../../scripts/Fix-NotepadPlusPlus.ps1
