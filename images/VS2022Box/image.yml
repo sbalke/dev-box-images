@@ -24,4 +24,5 @@ install:
       - notepadplusplus
   scripts:
     powershell:
+      - ../../scripts/Fix-NotepadPlusPlus.ps1
       - ../../scripts/Set-Theme.ps1
