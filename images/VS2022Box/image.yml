@@ -19,7 +19,7 @@ install:
     packages:
       - gh
       - id: docker-desktop
-        version: 4.22
+        version: '4.22'
       - sql-server-management-studio
       - notepadplusplus
   scripts:
