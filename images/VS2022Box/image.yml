@@ -18,7 +18,8 @@ install:
   choco:
     packages:
       - gh
-      - docker-desktop
+      - id: docker-desktop
+        version: 4.22
       - sql-server-management-studio
       - notepadplusplus
   scripts:
